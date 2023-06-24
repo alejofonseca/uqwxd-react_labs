@@ -6,6 +6,21 @@ const App = () => {
 
   const [todoEditing, setTodoEditing] = React.useState(null);
   const [editingText, setEditingText] = React.useState("");
+
+  React.useEffect(() => {
+      const json = localStorage.getItem("todos");
+      const loadedTodos = JSON.parse(json);
+      if (loadedTodos) {
+          setTodos(loadedTodos);
+      }
+  }, []);
+
+  React.useEffect(() => {
+      if (todos.length > 0) {
+          const json = JSON.stringify(todos);
+          localStorage.setItem("todos", json);
+      }
+  }, [todos]);
   
   // Add the handlesubmit code here
   function handleSubmit(e) {
@@ -68,13 +83,15 @@ return(
       
     {todos.map((todo) => (
         <div className="todo" key={todo.id}>
-            <input type="checkbox" id="completed" checked={todo.completed} onChange={() => toggleComplete(todo.id)}/>
+            <div className="todo-text">
+                <input type="checkbox" id="completed" checked={todo.completed} onChange={() => toggleComplete(todo.id)}/>
 
-            {todo.id === todoEditing ? (
-                <input type="text" onChange={(e) => setEditingText(e.target.value)} />
-            ) : (
-                <div>{todo.text}</div>
-            )}
+                {todo.id === todoEditing ? (
+                    <input type="text" onChange={(e) => setEditingText(e.target.value)} />
+                ) : (
+                    <div>{todo.text}</div>
+                )}
+            </div>
             
             <div className="todo-actions">
                 {todo.id === todoEditing ? (
